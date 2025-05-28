@@ -105,7 +105,7 @@
                             }, 1500);
                         },
                         error: function() {
-                            resultContainer.innerHTML = `<div class="alert alert-danger">Format Qrcode Salah.</div>`;
+                            resultContainer.innerHTML = `<div class="alert alert-danger">Qrcode Tidak Valid.</div>`;
                             setTimeout(() => {
                                 resultContainer.innerHTML = "";
                                 startScanner();
