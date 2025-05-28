@@ -16,6 +16,7 @@
                     <th>Tanggal</th>
                     <th>Lokasi</th>
                     <th>Deskripsi</th>
+                    <th>Status</th> <!-- Pindahkan Status sebelum Aksi -->
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -27,20 +28,24 @@
                     <td>{{ $kegiatan->lokasi }}</td>
                     <td>{{ $kegiatan->deskripsi }}</td>
                     <td>
+                        <span class="badge {{ $kegiatan->status == 1 ? 'bg-success' : 'bg-secondary' }}">
+                            {{ $kegiatan->status_label }}
+                        </span>
+                    </td>
+                    <td>
                         <a href="{{ route('kegiatan.edit', $kegiatan->id) }}" class="btn btn-sm btn-warning">Edit</a>
                         <form action="{{ route('kegiatan.destroy', $kegiatan->id) }}" method="POST" style="display:inline-block;">
                             @csrf
                             @method('DELETE')
                             <button onclick="return confirm('Yakin ingin hapus kegiatan ini?')" class="btn btn-sm btn-danger">Hapus</button>
                         </form>
-                        <form action="{{ route('kegiatan.selesai', $kegiatan->id) }}" method="POST" style="display:inline-block; margin-top:5px;">
-                            @csrf
-                            <button onclick="return confirm('Yakin ingin menyelesaikan kegiatan ini?')" class="btn btn-sm btn-secondary">Selesai</button>
-                        </form>
                         @if($kegiatan->status == 1)
-                            <span class="badge bg-success">Aktif</span>
+                            <form action="{{ route('kegiatan.selesai', $kegiatan->id) }}" method="POST" style="display:inline-block; margin-top:5px;">
+                                @csrf
+                                <button onclick="return confirm('Yakin ingin menyelesaikan kegiatan ini?')" class="btn btn-sm btn-secondary">Selesai</button>
+                            </form>
                         @else
-                            <span class="badge bg-secondary">Selesai</span>
+                            <button class="btn btn-sm btn-secondary" style="margin-top:5px;" disabled>Selesai</button>
                         @endif
                     </td>
                 </tr>

@@ -14,6 +14,7 @@ class Kegiatan extends Model
         'tanggal',
         'lokasi',
         'deskripsi',
+        'status',
     ];
     protected $casts = [
     'tanggal' => 'date',
@@ -22,6 +23,11 @@ class Kegiatan extends Model
     public function absensis()
     {
         return $this->hasMany(Absensi::class);
+    }
+
+    public function getStatusLabelAttribute()
+    {
+        return $this->status == 1 ? 'Aktif' : 'Selesai';
     }
 
 }

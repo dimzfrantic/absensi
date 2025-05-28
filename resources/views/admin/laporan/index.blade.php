@@ -9,6 +9,7 @@
             <tr>
                 <th>Nama Kegiatan</th>
                 <th>Tanggal</th>
+                <th>Status</th>
                 <th>Aksi</th>
             </tr>
         </thead>
@@ -17,6 +18,11 @@
             <tr>
                 <td>{{ $kegiatan->nama_kegiatan }}</td>
                 <td>{{ \Carbon\Carbon::parse($kegiatan->tanggal)->format('d-m-Y') }}</td>
+                <td>
+                    <span class="badge {{ $kegiatan->status == 1 ? 'bg-success' : 'bg-secondary' }}">
+                        {{ $kegiatan->status_label }}
+                    </span>
+                </td>
                 <td>
                     <a href="{{ route('laporan.show', $kegiatan->id) }}" class="btn btn-info btn-sm">Lihat Laporan</a>
                 </td>

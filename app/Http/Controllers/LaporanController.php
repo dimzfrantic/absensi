@@ -8,7 +8,6 @@ use App\Models\Absensi;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\AbsensiExport;
-use App\Exports\PegawaiAbsensiExport;
 
 class LaporanController extends Controller
 {

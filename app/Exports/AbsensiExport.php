@@ -31,7 +31,7 @@ class AbsensiExport implements FromArray, WithHeadings, WithCustomStartCell, Wit
                 'No' => $index + 1,
                 'Nama Pegawai' => $absen->pegawai->nama,
                 'NIP' => $absen->pegawai->nip,
-                'Waktu Absen' => $absen->created_at->format('d-m-Y H:i:s'),
+                'Waktu Absen' => $absen->created_at->format('H:i:s'),
             ];
         }
 

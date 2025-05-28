@@ -41,6 +41,14 @@
             <textarea name="deskripsi" class="form-control" rows="4">{{ $kegiatan->deskripsi }}</textarea>
         </div>
 
+        <div class="form-group mb-3">
+            <label for="status">Status Kegiatan</label>
+            <select name="status" id="status" class="form-control" required>
+                <option value="1" {{ $kegiatan->status == 1 ? 'selected' : '' }}>Aktif</option>
+            </select>
+            <small class="form-text text-muted">Status hanya dapat diubah menjadi Aktif.</small>
+        </div>
+
         <button type="submit" class="btn btn-primary">Update</button>
         <a href="{{ route('kegiatan.index') }}" class="btn btn-secondary">Batal</a>
     </form>

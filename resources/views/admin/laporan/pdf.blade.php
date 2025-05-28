@@ -29,7 +29,7 @@
                 <td>{{ $index + 1 }}</td>
                 <td>{{ $absen->pegawai->nama }}</td>
                 <td>{{ $absen->pegawai->nip }}</td>
-                <td>{{ \Carbon\Carbon::parse($absen->created_at)->format('d-m-Y H:i:s') }}</td>
+                <td>{{ \Carbon\Carbon::parse($absen->created_at)->format('H:i:s') }}</td>
             </tr>
             @endforeach
         </tbody>

@@ -39,6 +39,7 @@ class KegiatanController extends Controller
             'tanggal'       => 'required|date',
             'lokasi'        => 'required',
             'deskripsi'     => 'nullable',
+            'status'        => 'required|in:0,1',
         ]);
 
         $kegiatan = Kegiatan::findOrFail($id);
