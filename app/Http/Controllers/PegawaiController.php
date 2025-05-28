@@ -1,0 +1,116 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Pegawai;
+use Illuminate\Http\Request;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Imports\PegawaiImport;
+use Maatwebsite\Excel\Facades\Excel;
+
+class PegawaiController extends Controller
+{
+    public function index(Request $request)
+    {
+        $query = Pegawai::query();
+
+        // Kalau ada parameter 'search', filter berdasarkan nama atau nip
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where('nama', 'like', "%{$search}%")
+                ->orWhere('nip', 'like', "%{$search}%");
+        }
+
+        $pegawais = $query->orderBy('nama')->get();
+
+        return view('admin.pegawai.index', compact('pegawais'));
+    }
+
+    public function create()
+    {
+        return view('admin.pegawai.create');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+        'nama' => 'required',
+        'nip'  => 'required|numeric|unique:pegawais'
+        ], [
+            'nip.numeric' => 'NIP harus berupa angka.',
+            'nip.required' => 'NIP wajib diisi.',
+            'nip.unique'   => 'NIP sudah terdaftar, silakan gunakan NIP lain.',
+        ]);
+
+        // kode generate qrcode dan simpan data tetap sama
+        $qrCodeName = $request->nip . '.png';
+        $qrCodePath = storage_path('app/public/qrcodes/' . $qrCodeName);
+        
+        QrCode::format('png')
+        ->size(200)
+        ->margin(1)
+        ->generate($request->nip, $qrCodePath);
+
+        Pegawai::create([
+            'nama'   => $request->nama,
+            'nip'    => $request->nip,
+            'qrcode' => $qrCodeName,
+        ]);
+
+        return redirect()->route('pegawai.index')->with('success', 'Pegawai berhasil ditambahkan.');
+    }
+
+    public function edit($id)
+    {
+        $pegawai = Pegawai::findOrFail($id);
+        return view('admin.pegawai.edit', compact('pegawai'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $pegawai = Pegawai::findOrFail($id);
+
+        $request->validate([
+            'nama' => 'required',
+            'nip'  => 'required|unique:pegawais,nip,' . $pegawai->id
+        ]);
+
+        $pegawai->update([
+            'nama' => $request->nama,
+            'nip'  => $request->nip,
+        ]);
+
+        return redirect()->route('pegawai.index')->with('success', 'Pegawai berhasil diupdate.');
+    }
+
+    public function destroy($id)
+    {
+        $pegawai = Pegawai::findOrFail($id);
+        unlink(storage_path('app/public/qrcodes/' . $pegawai->qrcode));
+        $pegawai->delete();
+
+        return redirect()->route('pegawai.index')->with('success', 'Pegawai berhasil dihapus.');
+    }
+
+    public function uploadExcel(Request $request)
+    {
+        $request->validate([
+            'file_excel' => 'required|file|mimes:xls,xlsx'
+        ]);
+
+        try {
+            Excel::import(new PegawaiImport, $request->file('file_excel'));
+        } catch (ValidationException $e) {
+            $failures = $e->failures();
+
+            $errorMessages = [];
+            foreach ($failures as $failure) {
+                $errorMessages[] = 'Baris ' . $failure->row() . ': ' . implode(', ', $failure->errors());
+            }
+
+            return redirect()->route('pegawai.index')->withErrors($errorMessages);
+        }
+
+        return redirect()->route('pegawai.index')->with('success', 'Data pegawai berhasil diimport!');
+    }
+}

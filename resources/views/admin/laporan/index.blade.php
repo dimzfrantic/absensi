@@ -1,0 +1,30 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
+    <h1>Laporan Kegiatan</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nama Kegiatan</th>
+                <th>Tanggal</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($kegiatans as $kegiatan)
+            <tr>
+                <td>{{ $kegiatan->nama_kegiatan }}</td>
+                <td>{{ \Carbon\Carbon::parse($kegiatan->tanggal)->format('d-m-Y') }}</td>
+                <td>
+                    <a href="{{ route('laporan.show', $kegiatan->id) }}" class="btn btn-info btn-sm">Lihat Laporan</a>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary mt-3">Kembali ke Dashboard</a>
+</div>
+@endsection
