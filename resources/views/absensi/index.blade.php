@@ -104,8 +104,15 @@
                                 startScanner();
                             }, 1500);
                         },
-                        error: function() {
-                            resultContainer.innerHTML = `<div class="alert alert-danger">Qrcode Tidak Valid.</div>`;
+                        error: function(xhr) {
+                            let message = "QR Code Tidak Valid.";
+
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                message = xhr.responseJSON.message;
+                            }
+
+                            resultContainer.innerHTML = `<div class="alert alert-danger">${message}</div>`;
+
                             setTimeout(() => {
                                 resultContainer.innerHTML = "";
                                 startScanner();
