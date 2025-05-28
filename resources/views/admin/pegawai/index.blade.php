@@ -10,7 +10,7 @@
                 <div class="input-group">
                     <input type="text" name="search" class="form-control" placeholder="Cari nama atau NIP..." value="{{ request('search') }}">
                     <button class="btn btn-primary" type="submit">Cari</button>
-                </div>
+                </div>               
             </form>
         </div>
         <div class="col-md-6 text-end">
@@ -25,6 +25,7 @@
     <table class="table">
         <thead>
             <tr>
+                <th>No</th>
                 <th>Nama</th>
                 <th>NIP</th>
                 <th>QR Code</th>
@@ -32,8 +33,9 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($pegawais as $pegawai)
+            @foreach ($pegawais as $index => $pegawai)
                 <tr>
+                    <td>{{ $index + 1 }}</td>
                     <td>{{ $pegawai->nama }}</td>
                     <td>{{ $pegawai->nip }}</td>
                     <td><img src="{{ asset('storage/qrcodes/'.$pegawai->qrcode) }}" width="100"></td>
@@ -44,11 +46,17 @@
                             @method('DELETE')
                             <button class="btn btn-danger btn-sm" onclick="return confirm('Yakin?')">Hapus</button>
                         </form>
+                        <a href="{{ asset('storage/qrcodes/'.$pegawai->qrcode) }}" download class="btn btn-info btn-sm mt-1">Download QR</a>
                     </td>
                 </tr>
             @endforeach
         </tbody>
     </table>
+    <!-- Tombol Download di kanan bawah -->
+    <div class="d-flex justify-content-end mt-3">
+        <a href="{{ route('pegawai.downloadQRCodes') }}" class="btn btn-info">Download Semua QR Code</a>
+    </div>
+
 </div>
 <!-- Tombol Kembali ke Dashboard di bawah -->
     <div class="mt-3">

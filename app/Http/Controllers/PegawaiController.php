@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Imports\PegawaiImport;
 use Maatwebsite\Excel\Facades\Excel;
+use ZipArchive;
+use Illuminate\Support\Facades\Storage;
 
 class PegawaiController extends Controller
 {
@@ -112,5 +114,29 @@ class PegawaiController extends Controller
         }
 
         return redirect()->route('pegawai.index')->with('success', 'Data pegawai berhasil diimport!');
+    }
+
+    public function downloadQRCodes()
+    {
+        $zip = new ZipArchive;
+        $fileName = 'qrcodes_pegawai.zip';
+
+        $qrcodePath = storage_path('app/public/qrcodes');
+        $zipPath = storage_path('app/public/' . $fileName);
+
+        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+            $files = glob($qrcodePath . '/*.png'); // anggap file qr code png
+
+            foreach ($files as $file) {
+                $relativeNameInZip = basename($file);
+                $zip->addFile($file, $relativeNameInZip);
+            }
+
+            $zip->close();
+        } else {
+            return redirect()->back()->with('error', 'Gagal membuat ZIP file.');
+        }
+
+        return response()->download($zipPath)->deleteFileAfterSend(true);
     }
 }
