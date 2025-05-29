@@ -1,23 +1,22 @@
+@section('title', 'Absensi QR Code')
 @extends('layouts.app')
 
 @section('content')
 <style>
-    /* Full height container dengan flex center */
     .absensi-container {
-        min-height: 80vh; /* minimal tinggi 80% viewport */
+        min-height: 80vh;
         display: flex;
         flex-direction: column;
-        justify-content: center; /* vertical center */
-        align-items: center;     /* horizontal center */
+        justify-content: center;
+        align-items: center;
         text-align: center;
     }
     #reader {
         margin: 0 auto;
     }
     #log-absensi th, #log-absensi td {
-    font-size: 14px;
+        font-size: 14px;
     }
-
 </style>
 
 <div class="container absensi-container">
@@ -38,8 +37,7 @@
     <div id="reader" style="width: 300px; display: none;"></div>
 
     <div id="result" class="mt-3" style="max-width: 400px; margin: 0 auto;"></div>
-    
-    <!-- log realtime absensi -->
+
     <div class="mt-4 w-100" style="max-width:600px;">
         <h4>Log Absensi Hari Ini</h4>
         <table class="table table-striped" id="log-absensi">
@@ -104,6 +102,7 @@
                                 startScanner();
                             }, 1500);
                         },
+
                         error: function(xhr) {
                             let message = "QR Code Tidak Valid.";
 
@@ -141,7 +140,6 @@
         startScanner();
     });
 
-    // Log realtime
     function loadLog() {
         const kegiatanId = document.getElementById('kegiatan').value;
         if (kegiatanId === "") return;
@@ -164,11 +162,7 @@
         });
     }
 
-    // polling log tiap 3 detik
     setInterval(loadLog, 3000);
-
-    // juga refresh saat kegiatan dipilih
     document.getElementById('kegiatan').addEventListener('change', loadLog);
-
 </script>
 @endsection
