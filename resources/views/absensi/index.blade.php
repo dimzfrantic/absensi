@@ -61,6 +61,8 @@
 </div>
 {{-- Footer --}}
 <footer class="text-center mt-5 mb-2 text-muted" style="font-size: 14px;">
+    <img src="{{ asset('logotype qabar.svg') }}" alt="Logo Qabar" style="height:20px;vertical-align:middle;margin-bottom:6px;">
+    <br>
     &copy; TI Kanwil Kemenkum Jawa Barat 2025
 </footer>
 @endsection
