@@ -20,15 +20,9 @@
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
-                @guest
-                    <a class="navbar-brand" href="{{ route('absensi.index') }}">
-                        {{ config('app.name', 'Laravel') }}
-                    </a>
-                @else
-                    <a class="navbar-brand" href="{{ route('admin.dashboard') }}">
-                        {{ config('app.name', 'Laravel') }}
-                    </a>
-                @endguest
+                <a class="navbar-brand" href="{{ Auth::check() ? route('admin.dashboard') : route('absensi.index') }}">
+                    <img src="{{ asset('logotype qabar.svg') }}" alt="Logo Qabar" style="height:32px;vertical-align:middle;">
+                </a>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
