@@ -69,10 +69,3 @@ Route::middleware('auth')->prefix('admin')->group(function () {
 // Download Qrcodes
     Route::get('/pegawai/download-qrcodes', [PegawaiController::class, 'downloadQRCodes'])->name('pegawai.downloadQRCodes');
 
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

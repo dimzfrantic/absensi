@@ -9,9 +9,10 @@
         <div class="alert alert-info">Belum ada pegawai yang absen.</div>
     @else
         <p><strong>Jumlah Pegawai yang Hadir: {{ $absensis->count() }}</strong></p>
-        <div class="mb-3">
+        <div class="mb-3 text-end">
             <a href="{{ route('laporan.downloadPdfDetail', $kegiatan->id) }}" class="btn btn-danger">Download PDF</a>
             <a href="{{ route('laporan.downloadExcelDetail', $kegiatan->id) }}" class="btn btn-success">Download Excel</a>
+            <a href="{{ route('laporan.index') }}" class="btn btn-secondary">Kembali ke Daftar Kegiatan</a>
         </div>
         <table class="table">
             <thead>
@@ -34,7 +35,5 @@
             </tbody>
         </table>
     @endif
-
-    <a href="{{ route('laporan.index') }}" class="btn btn-secondary mt-3">Kembali ke Daftar Kegiatan</a>
 </div>
 @endsection

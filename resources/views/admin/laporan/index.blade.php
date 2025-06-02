@@ -4,6 +4,10 @@
 <div class="container">
     <h1>Laporan Kegiatan</h1>
 
+    <div class="mb-3 text-end">
+        <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">Kembali ke Dashboard</a>
+    </div>
+
     <table class="table">
         <thead>
             <tr>
@@ -30,7 +34,5 @@
             @endforeach
         </tbody>
     </table>
-
-    <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary mt-3">Kembali ke Dashboard</a>
 </div>
 @endsection

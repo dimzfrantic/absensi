@@ -2,6 +2,9 @@
 
 @section('content')
 <div class="container">
+    <div class="mb-3 text-end">
+        <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">Kembali ke Dashboard</a>
+    </div>
     <h1 class="mb-4">Daftar Kegiatan</h1>
 
     <a href="{{ route('kegiatan.create') }}" class="btn btn-primary mb-3">Tambah Kegiatan</a>
@@ -53,10 +56,5 @@
             </tbody>
         </table>
     @endif
-</div>
-<!-- Tombol Kembali ke Dashboard di bawah -->
-    <div class="mt-3">
-        <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">Kembali ke Dashboard</a>
-    </div>
 </div>
 @endsection

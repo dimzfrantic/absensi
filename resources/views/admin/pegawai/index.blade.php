@@ -2,6 +2,9 @@
 
 @section('content')
 <div class="container">
+    <div class="mb-3 text-end">
+        <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">Kembali ke Dashboard</a>
+    </div>
     <h1>Daftar Pegawai</h1>
 
     <div class="row mb-3">
@@ -12,9 +15,10 @@
                     <button class="btn btn-primary" type="submit">Cari</button>
                 </div>               
             </form>
+            <a href="{{ route('pegawai.create') }}" class="btn btn-success mt-2">Tambah Pegawai</a>
         </div>
         <div class="col-md-6 text-end">
-            <a href="{{ route('pegawai.create') }}" class="btn btn-success">Tambah Pegawai</a>
+            <a href="{{ route('pegawai.downloadQRCodes') }}" class="btn btn-info ms-2 mt-2 mt-md-0">Download Semua QR Code</a>
         </div>
     </div>
 
@@ -52,15 +56,5 @@
             @endforeach
         </tbody>
     </table>
-    <!-- Tombol Download di kanan bawah -->
-    <div class="d-flex justify-content-end mt-3">
-        <a href="{{ route('pegawai.downloadQRCodes') }}" class="btn btn-info">Download Semua QR Code</a>
-    </div>
-
-</div>
-<!-- Tombol Kembali ke Dashboard di bawah -->
-    <div class="mt-3">
-        <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">Kembali ke Dashboard</a>
-    </div>
 </div>
 @endsection
