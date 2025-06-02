@@ -100,20 +100,56 @@ class PegawaiController extends Controller
             'file_excel' => 'required|file|mimes:xls,xlsx'
         ]);
 
-        try {
-            Excel::import(new PegawaiImport, $request->file('file_excel'));
-        } catch (ValidationException $e) {
-            $failures = $e->failures();
+        $errorMessages = [];
+        $imported = 0;
 
-            $errorMessages = [];
-            foreach ($failures as $failure) {
-                $errorMessages[] = 'Baris ' . $failure->row() . ': ' . implode(', ', $failure->errors());
+        $collection = \Maatwebsite\Excel\Facades\Excel::toArray([], $request->file('file_excel'));
+        $rows = $collection[0];
+
+        // Lewati baris header, mulai dari baris kedua
+        foreach ($rows as $index => $row) {
+            if ($index === 0) continue; // skip header
+
+            // Ambil data berdasarkan urutan kolom (kolom 0 = Nama Pegawai, kolom 1 = NIP)
+            $nama = isset($row[0]) ? trim($row[0]) : null;
+            $nip = isset($row[1]) ? trim($row[1]) : null;
+
+            // Validasi manual
+            if (empty($nama)) {
+                $errorMessages[] = 'Baris ' . ($index + 1) . ': Nama wajib diisi.';
+                continue;
+            }
+            if (empty($nip)) {
+                $errorMessages[] = 'Baris ' . ($index + 1) . ': NIP wajib diisi.';
+                continue;
+            }
+            if (!is_numeric($nip)) {
+                $errorMessages[] = 'Baris ' . ($index + 1) . ': NIP harus berupa angka.';
+                continue;
+            }
+            if (\App\Models\Pegawai::where('nip', $nip)->exists()) {
+                $errorMessages[] = 'Baris ' . ($index + 1) . ': NIP sudah terdaftar.';
+                continue;
             }
 
-            return redirect()->route('pegawai.index')->withErrors($errorMessages);
+            // Generate QR code
+            $qrCodeName = $nip . '.png';
+            $qrCodePath = storage_path('app/public/qrcodes/' . $qrCodeName);
+            \QrCode::format('png')->size(200)->margin(1)->generate($nip, $qrCodePath);
+
+            \App\Models\Pegawai::create([
+                'nama'   => $nama,
+                'nip'    => $nip,
+                'qrcode' => $qrCodeName,
+            ]);
+            $imported++;
         }
 
-        return redirect()->route('pegawai.index')->with('success', 'Data pegawai berhasil diimport!');
+        $message = $imported > 0 ? "Berhasil import $imported pegawai." : null;
+
+        return redirect()->route('pegawai.index')
+            ->with('success', $message)
+            ->withErrors($errorMessages);
     }
 
     public function downloadQRCodes()
