@@ -48,6 +48,7 @@
                     <th>No</th>
                     <th>Nama</th>
                     <th>NIP</th>
+                    <th>Divisi</th>
                     <th>Waktu</th>
                 </tr>
             </thead>
@@ -58,6 +59,10 @@
     </div>
 
 </div>
+{{-- Footer --}}
+<footer class="text-center mt-5 mb-2 text-muted" style="font-size: 14px;">
+    &copy; TI Kanwil Kemenkum Jawa Barat 2025
+</footer>
 @endsection
 
 @section('scripts')
@@ -168,6 +173,7 @@
                         <td>${index + 1}</td>
                         <td>${absen.pegawai.nama}</td>
                         <td>${absen.pegawai.nip}</td>
+                        <td>${absen.pegawai.divisi ?? '-'}</td>
                         <td>${moment(absen.created_at).format('DD-MM-YYYY HH:mm:ss')}</td>
                     </tr>`;
                 });

@@ -15,8 +15,9 @@ class PegawaiImport implements ToModel, WithHeadingRow, WithValidation
         $nama = trim($row['nama_pegawai'] ?? '');
         $nipRaw = trim($row['nip'] ?? '');
         $nip = preg_replace('/\D/', '', $nipRaw);
+        $divisi = trim($row['divisi'] ?? '');
 
-        if (empty($nip) || empty($nama)) {
+        if (empty($nip) || empty($nama) || empty($divisi)) {
             return null; // skip jika kosong
         }
 
@@ -31,6 +32,7 @@ class PegawaiImport implements ToModel, WithHeadingRow, WithValidation
         return new Pegawai([
             'nama' => $nama,
             'nip' => $nip,
+            'divisi' => $divisi,
             'qrcode' => $qrCodeName,
         ]);
     }
@@ -40,6 +42,7 @@ class PegawaiImport implements ToModel, WithHeadingRow, WithValidation
         return [
             '*.nama_pegawai' => 'required',
             '*.nip' => ['required', 'regex:/^\d+$/', 'unique:pegawais,nip'],
+            '*.divisi' => 'required',
         ];
     }
 
@@ -50,6 +53,7 @@ class PegawaiImport implements ToModel, WithHeadingRow, WithValidation
             '*.nip.regex' => 'NIP harus berupa angka.',
             '*.nip.unique' => 'NIP sudah ada di database.',
             '*.nama_pegawai.required' => 'Nama wajib diisi.',
+            '*.divisi.required' => 'Divisi wajib diisi.',
         ];
     }
 }

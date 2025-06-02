@@ -17,6 +17,18 @@
                 <small class="text-danger">{{ $message }}</small>
             @enderror
         </div>
+        <div class="form-group">
+            <label>Divisi</label>
+            <select name="divisi" class="form-control" required>
+                <option value="">-- Pilih Divisi --</option>
+                <option value="Divisi P3H">Divisi P3H</option>
+                <option value="Divisi Pelayanan Hukum">Divisi Pelayanan Hukum</option>
+                <option value="Bagian TU dan Umum">Bagian TU dan Umum</option>
+            </select>
+            @error('divisi')
+                <small class="text-danger">{{ $message }}</small>
+            @enderror
+        </div>
         <button type="submit" class="btn btn-primary mt-2">Simpan</button>
     </form>
 

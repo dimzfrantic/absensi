@@ -42,6 +42,7 @@
                 <th>No</th>
                 <th>Nama</th>
                 <th>NIP</th>
+                <th>Divisi</th>
                 <th>QR Code</th>
                 <th>Aksi</th>
             </tr>
@@ -52,6 +53,7 @@
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $pegawai->nama }}</td>
                     <td>{{ $pegawai->nip }}</td>
+                    <td>{{ $pegawai->divisi }}</td>
                     <td><img src="{{ asset('storage/qrcodes/'.$pegawai->qrcode) }}" width="100"></td>
                     <td>
                         <a href="{{ route('pegawai.edit', $pegawai->id) }}" class="btn btn-warning btn-sm">Edit</a>

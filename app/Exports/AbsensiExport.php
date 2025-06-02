@@ -24,13 +24,26 @@ class AbsensiExport implements FromArray, WithHeadings, WithCustomStartCell, Wit
             ->with('pegawai')
             ->get();
 
-        $data = [];
+        // Hitung rekap divisi
+        $divisiCounts = [];
+        $totalPegawai = 0;
+        foreach ($absensis as $absen) {
+            $divisi = $absen->pegawai->divisi ?? '-';
+            if (!isset($divisiCounts[$divisi])) {
+                $divisiCounts[$divisi] = 0;
+            }
+            $divisiCounts[$divisi]++;
+            $totalPegawai++;
+        }
 
+        // Data tabel absensi
+        $data = [];
         foreach ($absensis as $index => $absen) {
             $data[] = [
                 'No' => $index + 1,
                 'Nama Pegawai' => $absen->pegawai->nama,
-                'NIP' => $absen->pegawai->nip,
+                'NIP' => "'" . $absen->pegawai->nip,
+                'Divisi' => $absen->pegawai->divisi ?? '-',
                 'Waktu Absen' => $absen->created_at->format('H:i:s'),
             ];
         }
@@ -41,20 +54,44 @@ class AbsensiExport implements FromArray, WithHeadings, WithCustomStartCell, Wit
     public function headings(): array
     {
         $kegiatan = Kegiatan::find($this->kegiatanId);
-        $absenCount = Absensi::where('kegiatan_id', $this->kegiatanId)->count();
+        $absensis = Absensi::where('kegiatan_id', $this->kegiatanId)->with('pegawai')->get();
 
-        return [
+        // Hitung rekap divisi
+        $divisiCounts = [];
+        $totalPegawai = 0;
+        foreach ($absensis as $absen) {
+            $divisi = $absen->pegawai->divisi ?? '-';
+            if (!isset($divisiCounts[$divisi])) {
+                $divisiCounts[$divisi] = 0;
+            }
+            $divisiCounts[$divisi]++;
+            $totalPegawai++;
+        }
+
+        $rekap = ["Rekap Jumlah Pegawai per Divisi:"];
+        foreach ($divisiCounts as $divisi => $jumlah) {
+            $rekap[] = "$divisi: $jumlah";
+        }
+        $rekap[] = "Total Pegawai: $totalPegawai";
+
+        // Format heading
+        $heading = [
             ["Laporan Absensi Kegiatan: {$kegiatan->nama_kegiatan}"],
             ["Tanggal: " . \Carbon\Carbon::parse($kegiatan->tanggal)->format('d-m-Y')],
-            ["Jumlah Pegawai Hadir: {$absenCount}"],
-            [], // baris kosong sebelum heading table
-            ['No', 'Nama Pegawai', 'NIP', 'Waktu Absen'],
+            [], // baris kosong
         ];
+        foreach ($rekap as $row) {
+            $heading[] = [$row];
+        }
+        $heading[] = []; // baris kosong sebelum table
+        $heading[] = ['No', 'Nama Pegawai', 'NIP', 'Divisi', 'Waktu Absen'];
+
+        return $heading;
     }
 
     public function startCell(): string
     {
-        return 'A1'; // mulai dari sel A1
+        return 'A1';
     }
 
     public function title(): string

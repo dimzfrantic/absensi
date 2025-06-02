@@ -8,7 +8,27 @@
     @if($absensis->isEmpty())
         <div class="alert alert-info">Belum ada pegawai yang absen.</div>
     @else
-        <p><strong>Jumlah Pegawai yang Hadir: {{ $absensis->count() }}</strong></p>
+        @php
+            $divisiCounts = [];
+            $totalPegawai = 0;
+            foreach ($absensis as $absen) {
+                $divisi = $absen->pegawai->divisi ?? '-';
+                if (!isset($divisiCounts[$divisi])) {
+                    $divisiCounts[$divisi] = 0;
+                }
+                $divisiCounts[$divisi]++;
+                $totalPegawai++;
+            }
+        @endphp
+        <div class="mb-2">
+            <strong>Rekap Jumlah Pegawai per Divisi:</strong>
+            <ul>
+                @foreach($divisiCounts as $divisi => $jumlah)
+                    <li>{{ $divisi }}: {{ $jumlah }}</li>
+                @endforeach
+                <li><strong>Total Pegawai: {{ $totalPegawai }}</strong></li>
+            </ul>
+        </div>
         <div class="mb-3 text-end">
             <a href="{{ route('laporan.downloadPdfDetail', $kegiatan->id) }}" class="btn btn-danger">Download PDF</a>
             <a href="{{ route('laporan.downloadExcelDetail', $kegiatan->id) }}" class="btn btn-success">Download Excel</a>
@@ -20,6 +40,7 @@
                     <th>No.</th>
                     <th>Nama Pegawai</th>
                     <th>NIP</th>
+                    <th>Divisi</th>
                     <th>Waktu Absen</th>
                 </tr>
             </thead>
@@ -29,6 +50,7 @@
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $absen->pegawai->nama }}</td>
                     <td>{{ $absen->pegawai->nip }}</td>
+                    <td>{{ $absen->pegawai->divisi ?? '-' }}</td>
                     <td>{{ \Carbon\Carbon::parse($absen->created_at)->format('H:i:s') }}</td>
                 </tr>
                 @endforeach

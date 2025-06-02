@@ -37,11 +37,13 @@ class PegawaiController extends Controller
     {
         $request->validate([
         'nama' => 'required',
-        'nip'  => 'required|numeric|unique:pegawais'
+        'nip'  => 'required|numeric|unique:pegawais',
+        'divisi' => 'required'
         ], [
             'nip.numeric' => 'NIP harus berupa angka.',
             'nip.required' => 'NIP wajib diisi.',
             'nip.unique'   => 'NIP sudah terdaftar, silakan gunakan NIP lain.',
+            'divisi.required' => 'Divisi wajib dipilih.',
         ]);
 
         // kode generate qrcode dan simpan data tetap sama
@@ -56,6 +58,7 @@ class PegawaiController extends Controller
         Pegawai::create([
             'nama'   => $request->nama,
             'nip'    => $request->nip,
+            'divisi' => $request->divisi,
             'qrcode' => $qrCodeName,
         ]);
 
@@ -110,9 +113,10 @@ class PegawaiController extends Controller
         foreach ($rows as $index => $row) {
             if ($index === 0) continue; // skip header
 
-            // Ambil data berdasarkan urutan kolom (kolom 0 = Nama Pegawai, kolom 1 = NIP)
+            // Ambil data berdasarkan urutan kolom (kolom 0 = Nama Pegawai, kolom 1 = NIP, kolom 2 = Divisi)
             $nama = isset($row[0]) ? trim($row[0]) : null;
             $nip = isset($row[1]) ? trim($row[1]) : null;
+            $divisi = isset($row[2]) ? trim($row[2]) : null;
 
             // Validasi manual
             if (empty($nama)) {
@@ -125,6 +129,10 @@ class PegawaiController extends Controller
             }
             if (!is_numeric($nip)) {
                 $errorMessages[] = 'Baris ' . ($index + 1) . ': NIP harus berupa angka.';
+                continue;
+            }
+            if (empty($divisi)) {
+                $errorMessages[] = 'Baris ' . ($index + 1) . ': Divisi wajib diisi.';
                 continue;
             }
             if (\App\Models\Pegawai::where('nip', $nip)->exists()) {
@@ -140,6 +148,7 @@ class PegawaiController extends Controller
             \App\Models\Pegawai::create([
                 'nama'   => $nama,
                 'nip'    => $nip,
+                'divisi' => $divisi,
                 'qrcode' => $qrCodeName,
             ]);
             $imported++;

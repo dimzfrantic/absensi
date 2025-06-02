@@ -18,6 +18,7 @@ class CreatePegawaisTable extends Migration
             $table->string('nama');
             $table->string('nip')->unique();
             $table->string('qrcode')->nullable();
+            $table->string('divisi')->nullable(); // Tambahkan kolom divisi jika diperlukan
             $table->timestamps();
         });
     }
