@@ -20,7 +20,7 @@
 </style>
 
 <div class="container absensi-container">
-    <h1 class="mb-4">Absensi Pegawai</h1>
+    <h1 class="mb-4">Absensi Kegiatan</h1>
 
     <div class="form-group mb-3 w-100" style="max-width: 400px;">
         <label for="kegiatan">Pilih Kegiatan:</label>
@@ -37,9 +37,11 @@
     <div id="reader" style="width: 300px; display: none;"></div>
 
     <div id="result" class="mt-3" style="max-width: 400px; margin: 0 auto;"></div>
-
+    <!-- Audio untuk notifikasi sukses -->
+    <audio id="ding-audio" src="/sounds/ding.mp3" preload="auto"></audio>
+    
     <div class="mt-4 w-100" style="max-width:600px;">
-        <h4>Log Absensi Hari Ini</h4>
+        <h4>Daftar Absensi Pegawai Hari Ini</h4>
         <table class="table table-striped" id="log-absensi">
             <thead>
                 <tr>
@@ -97,6 +99,10 @@
 
                             resultContainer.innerHTML = `<div class="alert alert-${alertClass}">${response.message}</div>`;
 
+                            if (response.status !== 'error') {
+                                document.getElementById('ding-audio').play();
+                            }
+
                             setTimeout(() => {
                                 resultContainer.innerHTML = "";
                                 startScanner();
@@ -135,11 +141,19 @@
             resultContainer.innerHTML = `<div class="alert alert-warning">Pilih kegiatan terlebih dahulu.</div>`;
             return;
         }
-
+        // Hapus pesan error jika ada, saat mulai scan
+        resultContainer.innerHTML = "";
         document.getElementById('reader').style.display = 'block';
         startScanner();
     });
 
+    // Hapus pesan error jika user memilih kegiatan setelah error muncul
+    document.getElementById('kegiatan').addEventListener('change', function() {
+        if (this.value !== "") {
+            resultContainer.innerHTML = "";
+        }
+        loadLog();
+    });
     function loadLog() {
         const kegiatanId = document.getElementById('kegiatan').value;
         if (kegiatanId === "") return;
