@@ -77,12 +77,16 @@ class PegawaiController extends Controller
 
         $request->validate([
             'nama' => 'required',
-            'nip'  => 'required|unique:pegawais,nip,' . $pegawai->id
+            'nip'  => 'required|unique:pegawais,nip,' . $pegawai->id,
+            'divisi' => 'required'
+        ], [
+            'divisi.required' => 'Divisi wajib dipilih.',
         ]);
 
         $pegawai->update([
             'nama' => $request->nama,
             'nip'  => $request->nip,
+            'divisi' => $request->divisi,
         ]);
 
         return redirect()->route('pegawai.index')->with('success', 'Pegawai berhasil diupdate.');
