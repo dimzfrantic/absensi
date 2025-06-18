@@ -1,8 +1,9 @@
 ## Environment
 1. Windows 10/11
-2. **[XAMPP / PHP Version 8.2.12](https://sourceforge.net/projects/xampp/files/XAMPP%20Windows/8.2.12/xampp-windows-x64-8.2.12-0-VS16-installer.exe)**
-3. Laravel Framework 12.16.0
-4. **[php_imagick-3.7.0-8.2-ts-vs16-x64.zip](https://downloads.php.net/~windows/pecl/releases/imagick/3.7.0/php_imagick-3.7.0-8.2-ts-vs16-x64.zip)**
+2. Node JS versi v22.15.1
+3. **[XAMPP / PHP Version 8.2.12](https://sourceforge.net/projects/xampp/files/XAMPP%20Windows/8.2.12/xampp-windows-x64-8.2.12-0-VS16-installer.exe)**
+4. Laravel Framework 12.16.0
+5. **[php_imagick-3.7.0-8.2-ts-vs16-x64.zip](https://downloads.php.net/~windows/pecl/releases/imagick/3.7.0/php_imagick-3.7.0-8.2-ts-vs16-x64.zip)**
 
    Once you downloaded the correct files:
     - Extract from php_imagick-….zip the **php_imagick.dll** file, and save it to the **ext** directory of your PHP installation
