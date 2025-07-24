@@ -4,7 +4,7 @@
 <div class="container">
     <h1>Edit Pegawai</h1>
 
-    <form method="POST" action="{{ route('pegawai.update', $pegawai->id) }}">
+    <form method="POST" action="{{ route('pegawai.update', $pegawai->id) }}" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
@@ -36,6 +36,19 @@
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
+
+        <div class="form-group">
+            <label>Foto Pegawai</label><br>
+            @if($pegawai->foto)
+                <img src="{{ asset('storage/foto_pegawai/' . $pegawai->foto) }}" alt="Foto Pegawai" width="120" class="mb-2"><br>
+            @endif
+            <input type="file" name="foto" class="form-control" accept="image/*">
+            <small class="form-text text-muted">Kosongkan jika tidak ingin mengubah foto.</small>
+            @error('foto')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
+        </div>
+
         <button type="submit" class="btn btn-primary mt-2">Update</button>
         <a href="{{ route('pegawai.index') }}" class="btn btn-secondary mt-2">Kembali ke Daftar Pegawai</a>
     </form>

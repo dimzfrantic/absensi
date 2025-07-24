@@ -32,7 +32,7 @@
         </select>
     </div>
 
-    <button id="start-scan" class="btn btn-primary mb-3">Mulai Scan QR Code</button>
+    <button id="start-scan" class="btn btn-primary mb-3">Mulai Scan</button>
 
     <div id="reader" style="width: 300px; display: none;"></div>
 

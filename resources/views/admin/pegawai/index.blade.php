@@ -40,6 +40,7 @@
         <thead>
             <tr>
                 <th>No</th>
+                <th>Foto</th> <!-- Tambahkan kolom Foto -->
                 <th>Nama</th>
                 <th>NIP</th>
                 <th>Divisi</th>
@@ -51,6 +52,13 @@
             @foreach ($pegawais as $index => $pegawai)
                 <tr>
                     <td>{{ $index + 1 }}</td>
+                    <td>
+                        @if($pegawai->foto)
+                            <img src="{{ asset('storage/foto_pegawai/' . $pegawai->foto) }}" width="60" alt="Foto Pegawai">
+                        @else
+                            <span class="text-muted">-</span>
+                        @endif
+                    </td>
                     <td>{{ $pegawai->nama }}</td>
                     <td>{{ $pegawai->nip }}</td>
                     <td>{{ $pegawai->divisi }}</td>

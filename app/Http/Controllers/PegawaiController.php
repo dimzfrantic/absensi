@@ -36,30 +36,51 @@ class PegawaiController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-        'nama' => 'required',
-        'nip'  => 'required|numeric|unique:pegawais',
-        'divisi' => 'required'
+            'nama' => 'required',
+            'nip'  => 'required|numeric|unique:pegawais',
+            'divisi' => 'required',
+            'foto' => 'required|image|mimes:jpeg,png,jpg|max:2048'
         ], [
             'nip.numeric' => 'NIP harus berupa angka.',
             'nip.required' => 'NIP wajib diisi.',
             'nip.unique'   => 'NIP sudah terdaftar, silakan gunakan NIP lain.',
             'divisi.required' => 'Divisi wajib dipilih.',
+            'foto.required' => 'Foto wajib diupload.',
+            'foto.image' => 'File harus berupa gambar.',
+            'foto.mimes' => 'Format foto harus jpeg, png, atau jpg.',
+            'foto.max' => 'Ukuran foto maksimal 2MB.',
         ]);
 
-        // kode generate qrcode dan simpan data tetap sama
+        // Upload foto pegawai
+        $fotoPath = null;
+        if ($request->hasFile('foto')) {
+            $foto = $request->file('foto');
+            //$fotoName = time() . '_' . uniqid() . '.' . $foto->getClientOriginalExtension();
+            $fotoName = $request->nip . '.' . $foto->getClientOriginalExtension();
+            $foto->storeAs('foto_pegawai', $fotoName, 'public');
+            $fotoPath = $fotoName;
+        }
+
+        // Generate QR code
         $qrCodeName = $request->nip . '.png';
         $qrCodePath = storage_path('app/public/qrcodes/' . $qrCodeName);
-        
         QrCode::format('png')
-        ->size(200)
-        ->margin(1)
-        ->generate($request->nip, $qrCodePath);
-
+            ->size(200)
+            ->margin(1)
+            ->generate($request->nip, $qrCodePath);
+// dd([
+//    'nama' => $request->nama,
+//    'nip' => $request->nip,
+//    'divisi' => $request->divisi,
+//   'qrcode' => $qrCodeName,
+//    'foto' => $fotoPath,
+//]);
         Pegawai::create([
             'nama'   => $request->nama,
             'nip'    => $request->nip,
             'divisi' => $request->divisi,
             'qrcode' => $qrCodeName,
+            'foto'   => $fotoPath,
         ]);
 
         return redirect()->route('pegawai.index')->with('success', 'Pegawai berhasil ditambahkan.');
@@ -78,16 +99,34 @@ class PegawaiController extends Controller
         $request->validate([
             'nama' => 'required',
             'nip'  => 'required|unique:pegawais,nip,' . $pegawai->id,
-            'divisi' => 'required'
+            'divisi' => 'required',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ], [
             'divisi.required' => 'Divisi wajib dipilih.',
+            'foto.image' => 'File harus berupa gambar.',
+            'foto.mimes' => 'Format foto harus jpeg, png, atau jpg.',
+            'foto.max' => 'Ukuran foto maksimal 2MB.',
         ]);
 
-        $pegawai->update([
+        $data = [
             'nama' => $request->nama,
             'nip'  => $request->nip,
             'divisi' => $request->divisi,
-        ]);
+        ];
+
+        // Jika ada upload foto baru
+        if ($request->hasFile('foto')) {
+            // Hapus foto lama jika ada
+            if ($pegawai->foto && Storage::exists('public/foto_pegawai/' . $pegawai->foto)) {
+                Storage::delete('public/foto_pegawai/' . $pegawai->foto);
+            }
+            $foto = $request->file('foto');
+            $fotoName = time() . '_' . uniqid() . '.' . $foto->getClientOriginalExtension();
+            $foto->storeAs('foto_pegawai', $fotoName, 'public');
+            $data['foto'] = $fotoName;
+        }
+
+        $pegawai->update($data);
 
         return redirect()->route('pegawai.index')->with('success', 'Pegawai berhasil diupdate.');
     }
@@ -147,7 +186,7 @@ class PegawaiController extends Controller
             // Generate QR code
             $qrCodeName = $nip . '.png';
             $qrCodePath = storage_path('app/public/qrcodes/' . $qrCodeName);
-            \QrCode::format('png')->size(200)->margin(1)->generate($nip, $qrCodePath);
+            QrCode::format('png')->size(200)->margin(1)->generate($nip, $qrCodePath);
 
             \App\Models\Pegawai::create([
                 'nama'   => $nama,

@@ -9,6 +9,6 @@ class Pegawai extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nama', 'nip', 'qrcode', 'divisi'];
+    protected $fillable = ['nama', 'nip', 'qrcode', 'divisi', 'foto'];
 
 }

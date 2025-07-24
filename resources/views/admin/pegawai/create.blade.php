@@ -4,7 +4,7 @@
 <div class="container">
     <h1>Tambah Pegawai</h1>
 
-    <form method="POST" action="{{ route('pegawai.store') }}">
+    <form method="POST" action="{{ route('pegawai.store') }}" enctype="multipart/form-data">
         @csrf
         <div class="form-group">
             <label>Nama</label>
@@ -26,6 +26,13 @@
                 <option value="Bagian TU dan Umum">Bagian TU dan Umum</option>
             </select>
             @error('divisi')
+                <small class="text-danger">{{ $message }}</small>
+            @enderror
+        </div>
+        <div class="form-group">
+            <label>Foto Pegawai</label>
+            <input type="file" name="foto" class="form-control" accept="image/*" required>
+            @error('foto')
                 <small class="text-danger">{{ $message }}</small>
             @enderror
         </div>
